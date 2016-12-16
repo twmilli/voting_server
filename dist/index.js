@@ -29,7 +29,7 @@ var db_url = process.env.MONGODB_URI;
 
 
 app.get('/favicon.ico', function (req, res) {
-  res.send(200);
+  res.sendStatus(200);
 });
 
 // Disable x-powered-by header which shows what software server is running (express);
@@ -60,10 +60,10 @@ mongo.connect(db_url, function (err, db) {
 app.get('/favicon.ico', function (req, res) {
   res.sendStatus(200);
 });
-app.use(_express2.default.static(__dirname + '/View'));
 //fix favicon at some point
 app.get('*', function (req, res) {
-  res.sendFile('index.html');
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.write('<h1>VOTING SERVER</h1>\n      <a href="http://project-vote.surge.sh/">http://project-vote.surge.sh/</a>');
   res.end();
 });
 
