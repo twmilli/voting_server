@@ -16,6 +16,22 @@ var _middleware = require('./middleware.js');
 
 var _middleware2 = _interopRequireDefault(_middleware);
 
+var _passwordless = require('passwordless');
+
+var _passwordless2 = _interopRequireDefault(_passwordless);
+
+var _passwordlessMongostoreBcryptNode = require('passwordless-mongostore-bcrypt-node');
+
+var _passwordlessMongostoreBcryptNode2 = _interopRequireDefault(_passwordlessMongostoreBcryptNode);
+
+var _emailjs = require('emailjs');
+
+var _emailjs2 = _interopRequireDefault(_emailjs);
+
+var _routes = require('routes');
+
+var _routes2 = _interopRequireDefault(_routes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
@@ -36,6 +52,9 @@ app.get('/favicon.ico', function (req, res) {
 app.disable('x-powered-by');
 
 app.use(_middleware2.default);
+app.use('/', _routes2.default);
+app.use(_passwordless2.default.sessionSupport());
+app.use(_passwordless2.default.acceptToken({ successRedirect: '/acceptToken' }));
 
 //connect to database and load the most recently saved state into the store
 mongo.connect(db_url, function (err, db) {
@@ -47,6 +66,34 @@ mongo.connect(db_url, function (err, db) {
     if (start_state !== undefined) {
       _store2.default.dispatch((0, _actionCreators.setState)(start_state));
     }
+  });
+
+  var myEmail = 'project-vote@outlook.com';
+  var password = process.env.PASSWORD;
+  var smtp = 'smtp-mail.outlook.com';
+  var smtpServer = _emailjs2.default.server.connect({
+    user: myEmail,
+    password: password,
+    timeout: 60000,
+    host: smtp,
+    ssl: true
+  });
+
+  var host = 'https://vote-backend.herokuapp.com/';
+
+  _passwordless2.default.init(new _passwordlessMongostoreBcryptNode2.default(db_url));
+  _passwordless2.default.addDelivery(function (tokenToSend, uidToSend, recipient, callback) {
+    smtpServer.send({
+      text: 'Hello!\nYou can now access your account here: ' + host + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend),
+      from: myEmail,
+      to: recipient,
+      subject: 'Token for ' + host
+    }, function (err, message) {
+      if (err) {
+        console.log(err);
+      }
+      callback(err);
+    });
   });
 
   /*every time there is a change to the store:
