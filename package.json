@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon lib/index.js --exec babel-node --define process.env.PASSWORD='\"sw@gmoney#B0bberB0y\"'",
+    "serve": "nodemon lib/index.js --exec babel-node,
     "build": "babel lib -d dist",
     "start": "node dist/index.js",
     "test": "mocha --compilers js:babel-register"
