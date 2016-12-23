@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon lib/index.js --exec babel-node --define process.env.PASSWORD='\"sw@gmoney#B0bberB0y\"'",
+    "debug": "DEBUG=express:* nodemon lib/index.js --exec babel-node --define process.env.PASSWORD='\"sw@gmoney#B0bberB0y\"'",
+    "serve":"nodemon lib/index.js --exec babel-node --define process.env.PASSWORD='\"sw@gmoney#B0bberB0y\"'",
     "build": "babel lib -d dist",
     "start": "node dist/index.js",
     "test": "mocha --compilers js:babel-register"
@@ -21,10 +22,14 @@
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
     "emailjs": "^1.0.8",
     "express": "^4.14.0",
+    "express-session": "^1.14.2",
     "immutable": "^3.8.1",
     "mongodb": "^2.2.15",
+    "morgan": "^1.7.0",
     "passwordless": "^1.1.2",
     "passwordless-mongostore-bcrypt-node": "^0.1.1",
     "redux": "^3.6.0",
