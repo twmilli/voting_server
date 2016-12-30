@@ -8,6 +8,10 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
+var _bodyParser = require('body-parser');
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
 var _passwordless = require('passwordless');
 
 var _passwordless2 = _interopRequireDefault(_passwordless);
@@ -15,8 +19,8 @@ var _passwordless2 = _interopRequireDefault(_passwordless);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
-var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+var urlencodedParser = _bodyParser2.default.urlencoded({ extended: false });
 
 
 router.get('/logout', _passwordless2.default.logout());
@@ -25,14 +29,27 @@ router.get('/favicon.ico', function (req, res) {
   res.sendStatus(200);
 });
 //fix favicon at some point
+router.get('/login', function (req, res) {
+  res.render('login');
+});
 
-router.post('/sendtoken', bodyParser.json(), function (req, res, next) {
+router.get('/logout', _passwordless2.default.logout(), function (req, res) {
+  res.redirect('/');
+});
+
+router.get('/restricted', _passwordless2.default.restricted({
+  failureRedirect: '/login'
+}), function (req, res) {
+  res.render('pages/restricted', { user: req.user });
+});
+
+router.post('/sendtoken', _bodyParser2.default.json(), function (req, res, next) {
   console.log(req.body);
   next();
 }, _passwordless2.default.requestToken(
 // Simply accept every user
-function (user, delivery, callback, req) {
-  console.log(req.body);
+function (user, delivery, callback) {
+  debugger;
   callback(null, user);
 }), function (req, res) {
   console.log("SENT");

@@ -20,9 +20,9 @@ var _passwordless = require('passwordless');
 
 var _passwordless2 = _interopRequireDefault(_passwordless);
 
-var _passwordlessMongostoreBcryptNode = require('passwordless-mongostore-bcrypt-node');
+var _passwordlessMongostore = require('passwordless-mongostore');
 
-var _passwordlessMongostoreBcryptNode2 = _interopRequireDefault(_passwordlessMongostoreBcryptNode);
+var _passwordlessMongostore2 = _interopRequireDefault(_passwordlessMongostore);
 
 var _emailjs = require('emailjs');
 
@@ -48,13 +48,19 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _nodemailer = require('nodemailer');
+
+var _nodemailer2 = _interopRequireDefault(_nodemailer);
+
+var _config = require('./config');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
 
 var http = (0, _http.Server)(app);
-var https = require('https');
-https.globalAgent.options.secureProtocol = 'SSLv3_method';
 var io = require('socket.io')(http);
 var port = 3000;
 
@@ -91,44 +97,45 @@ mongo.connect(db_url, function (err, db) {
         });
         io.emit('state', _store2.default.getState().toJS());
     });
-
-    var myEmail = 'project-vote@outlook.com';
-    var myPassword = process.env.PASSWORD;
-    var mySmtp = 'smtp-mail.outlook.com';
-    var smtpServer = _emailjs2.default.server.connect({
-        user: myEmail,
-        password: myPassword,
-        timeout: 6000,
-        host: mySmtp,
-        port: 587,
-        tls: { ciphers: "SSLv3" }
+    var smtpConfig = {
+        service: "hotmail",
+        auth: _config2.default
+    };
+    var transporter = _nodemailer2.default.createTransport(smtpConfig);
+    transporter.verify(function (error, success) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('SERVER IS READY');
+        }
     });
 
-    smtpServer.send({
-        text: 'TEST',
-        from: myEmail,
-        to: 'twm013@bucknell.edu',
-        subject: 'TEST'
+    /*transporter.sendMail({
+      text: 'WORK',
+      from: config.user,
+      to: 'twmilli@comcast.net',
+      subject: 'TEST'
     }, function (err, message) {
-        console.log(err || message);
-    });
+        if (err) {
+            console.log(err);
+        }
+    });*/
 
     var host = 'https://vote-backend.herokuapp.com/';
 
-    _passwordless2.default.init(new _passwordlessMongostoreBcryptNode2.default(db_url));
+    _passwordless2.default.init(new _passwordlessMongostore2.default(db_url));
     _passwordless2.default.addDelivery(function (tokenToSend, uidToSend, recipient, callback) {
         console.log("SENDING");
         var tokenLink = host + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend);
-        smtpServer.send({
-            text: 'Hello!\nYou can now access your account here: ' + tokenLink,
-            from: myEmail,
+        transporter.sendMail({
+            text: 'Hello!\nYou can now access your account here:' + tokenLink,
+            from: _config2.default.user,
             to: recipient,
             subject: 'Token for ' + host
         }, function (err, message) {
             if (err) {
                 console.log(err);
             }
-            callback(err);
         });
     });
     //app.use(logger('dev'));
@@ -142,7 +149,7 @@ mongo.connect(db_url, function (err, db) {
     //app.use(express.static(path.join(__dirname, 'public')));
 
     app.use(_passwordless2.default.sessionSupport());
-    app.use(_passwordless2.default.acceptToken());
+    app.use(_passwordless2.default.acceptToken({ successRedirect: 'http://project-vote.surge.sh/' }));
     app.use('/', _index2.default);
 
     io.on('connection', function (socket) {
