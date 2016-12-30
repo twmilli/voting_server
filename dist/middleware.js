@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function (req, res, next) {
 
   // Currently allows access from any origin
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.setHeader('Access-Control-Allow-Origin', _config2.default.front);
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -19,5 +19,12 @@ exports.default = function (req, res, next) {
   next();
 };
 
-; // Add headers
+var _config = require('./config');
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Add headers
 // Source: http://stackoverflow.com/questions/18310394/no-access-control-allow-origin-node-apache-port-issue
+;
