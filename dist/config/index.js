@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var front = 'http://project-vote.surge.sh';
-var back = 'https://dashboard.heroku.com/apps/vote-backend';
+var back = 'https://vote-backend.herokuapp.com';
 
 if (process.env.NODE_ENV != "production") {
   front = 'http://localhost:8080';
