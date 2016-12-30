@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function (req, res, next) {
 
   // Currently allows access from any origin
+  console.log(_config2.default.front);
+  console.log(process.env.NODE_ENV);
   res.setHeader('Access-Control-Allow-Origin', _config2.default.front);
 
   // Request methods you wish to allow

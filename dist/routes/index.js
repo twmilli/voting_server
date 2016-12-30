@@ -37,8 +37,7 @@ router.get('/login', function (req, res) {
   if (req.user) {
     var end_index = req.user.search('@');
     var username = req.user.slice(0, end_index);
-    console.log(username);
-    res.redirect(_config2.default.front + username);
+    res.redirect(_config2.default.front + '/' + username);
   } else {
     res.send(null);
   }
@@ -51,7 +50,6 @@ router.get('/restricted', _passwordless2.default.restricted({
 });
 
 router.post('/sendtoken', _bodyParser2.default.json(), function (req, res, next) {
-  console.log(req.body);
   next();
 }, _passwordless2.default.requestToken(
 // Simply accept every user
@@ -59,7 +57,6 @@ function (user, delivery, callback) {
   debugger;
   callback(null, user);
 }), function (req, res) {
-  console.log('sent');
   res.send('success');
 });
 

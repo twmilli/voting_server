@@ -153,7 +153,6 @@ mongo.connect(db_url, function (err, db) {
     app.use('/', _index2.default);
 
     io.on('connection', function (socket) {
-        //console.log('CONNECTED TO CLIENT', socket.id);
         socket.emit('state', _store2.default.getState());
         socket.on('action', _store2.default.dispatch.bind(_store2.default));
     });

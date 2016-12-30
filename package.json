@@ -7,7 +7,7 @@
     "debug": "DEBUG=express:* nodemon lib/index.js --inspect --exec  babel-node",
     "serve": "nodemon lib/index.js --exec babel-node",
     "build": "babel lib -d dist",
-    "start": "NODE_ENV='\"production\"' node dist/index.js",
+    "start": "NODE_ENV='production' node dist/index.js",
     "test": "mocha --compilers js:babel-register"
   },
   "author": "Taylor Milliman",
