@@ -121,7 +121,7 @@ mongo.connect(db_url, function (err, db) {
         }
     });*/
 
-    var host = 'http://localhost:3000/';
+    var host = _config2.default.back;
 
     _passwordless2.default.init(new _passwordlessMongostore2.default(db_url));
     _passwordless2.default.addDelivery(function (tokenToSend, uidToSend, recipient, callback) {

@@ -16,6 +16,10 @@ var _passwordless = require('passwordless');
 
 var _passwordless2 = _interopRequireDefault(_passwordless);
 
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -34,7 +38,7 @@ router.get('/login', function (req, res) {
     var end_index = req.user.search('@');
     var username = req.user.slice(0, end_index);
     console.log(username);
-    res.redirect('http://localhost:8080/' + username);
+    res.redirect(_config2.default.front + username);
   } else {
     res.send(null);
   }
