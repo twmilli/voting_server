@@ -121,11 +121,10 @@ mongo.connect(db_url, function (err, db) {
         }
     });*/
 
-    var host = 'https://vote-backend.herokuapp.com/';
+    var host = 'http://localhost:3000/';
 
     _passwordless2.default.init(new _passwordlessMongostore2.default(db_url));
     _passwordless2.default.addDelivery(function (tokenToSend, uidToSend, recipient, callback) {
-        console.log("SENDING");
         var tokenLink = host + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend);
         transporter.sendMail({
             text: 'Hello!\nYou can now access your account here:' + tokenLink,
@@ -136,6 +135,7 @@ mongo.connect(db_url, function (err, db) {
             if (err) {
                 console.log(err);
             }
+            callback(err);
         });
     });
     //app.use(logger('dev'));
@@ -149,7 +149,7 @@ mongo.connect(db_url, function (err, db) {
     //app.use(express.static(path.join(__dirname, 'public')));
 
     app.use(_passwordless2.default.sessionSupport());
-    app.use(_passwordless2.default.acceptToken({ successRedirect: 'http://project-vote.surge.sh/' }));
+    app.use(_passwordless2.default.acceptToken({ successRedirect: '/login' }));
     app.use('/', _index2.default);
 
     io.on('connection', function (socket) {

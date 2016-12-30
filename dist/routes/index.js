@@ -30,11 +30,14 @@ router.get('/favicon.ico', function (req, res) {
 });
 //fix favicon at some point
 router.get('/login', function (req, res) {
-  res.render('login');
-});
-
-router.get('/logout', _passwordless2.default.logout(), function (req, res) {
-  res.redirect('/');
+  if (req.user) {
+    var end_index = req.user.search('@');
+    var username = req.user.slice(0, end_index);
+    console.log(username);
+    res.redirect('http://localhost:8080/' + username);
+  } else {
+    res.send(null);
+  }
 });
 
 router.get('/restricted', _passwordless2.default.restricted({
@@ -52,8 +55,8 @@ function (user, delivery, callback) {
   debugger;
   callback(null, user);
 }), function (req, res) {
-  console.log("SENT");
-  res.render('sent');
+  console.log('sent');
+  res.send('success');
 });
 
 router.get('/', function (req, res) {
