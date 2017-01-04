@@ -15,6 +15,7 @@ var _immutable = require('immutable');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var INITIAL_STATE = (0, _immutable.fromJS)([{
+  "creator": 'twm013@bucknell.edu',
   title: "Favorite Color?",
   choices: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
   tally: {

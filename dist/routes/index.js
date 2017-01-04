@@ -35,11 +35,25 @@ router.get('/favicon.ico', function (req, res) {
 //fix favicon at some point
 router.get('/login', function (req, res) {
   if (req.user) {
-    var end_index = req.user.search('@');
-    var username = req.user.slice(0, end_index);
-    res.redirect(_config2.default.front + '/' + username);
+    if (!process.users) {
+      process.users = {};
+    }
+    process.users[req.user] = true;
+    res.redirect(_config2.default.front);
   } else {
     res.send(null);
+  }
+});
+
+router.get('/logged_in/:user', function (req, res) {
+  var user = req.params.user;
+  if (!process.users) {
+    process.users = {};
+  }
+  if (process.users[user] === true) {
+    res.send(true);
+  } else {
+    res.send(false);
   }
 });
 
